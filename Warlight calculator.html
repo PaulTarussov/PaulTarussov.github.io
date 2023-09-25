@@ -1,7 +1,131 @@
+<!DOCTYPE html>
 <html>
 <body>
 
-<h2>Warlight Calculator (for True Diplomacy settings)</h2>
+<h2>Warlight Calculator</h2>
+
+<p id="demo">For True Diplomacy settings.</p>
+
+<button type="button" onclick="main()">Advance one turn.</button>
+
+<p></p>
+
+<div>How many attackers:</div>
+<input type="text" id="attackerCount">
+
+<div>How many defenders:</div>
+<input type="text" id="defenderCount">
+
+<div>How many cities does the defender have?</div>
+<input type="text" id="cityCount">
+
+<div>The other cities have [armies] each:</div>
+<input type="text" id="otherCities">
+
+
+<script>
+
+function main() {
+
+// Update variables.
+
+updateNumbers();
+
+// Confirm that it's done!
+
+document.getElementById("demo").innerHTML += " Calculated! ";
+
+// Calculate reinforcements.
+
+reinforceCities();
+
+// Increment turn tracker.
+
+console.log("Played through turn " + turnTracker + ".");
+
+turnTracker++;
+
+}
+
+let attackers;
+let defenders;
+let tempDefenders;
+let cities;
+let otherCityDefenders;
+let otherArmies = otherCityDefenders * cities;
+let turnTracker = 1;
+let defenderArmiesAvailable = 400 * cities;
+
+// cities = document.getElementById('cityCount').value;
+
+// console.log("We have " + cities + " Cities.");
+
+function updateNumbers(){
+        attackers = document.getElementById('attackerCount').value;
+        defenders = document.getElementById('defenderCount').value;
+        
+        attackHappens();
+        defenseHappens();
+        
+        document.getElementById('attackerCount').value = attackers;
+        document.getElementById('defenderCount').value = defenders;
+        
+        // Set cities and army numbers.
+        
+        cities = document.getElementById('cityCount').value;
+        console.log("Number of cities is equal to " + cities);
+        
+        otherCityDefenders = document.getElementById('otherCities').value;
+        console.log("Each other city has " + otherCityDefenders + " armies.");
+}
+
+function attackHappens(){
+	tempDefenders = defenders;
+	defenders = defenders - (attackers * 0.33);
+    console.log("After the attack, the new number of defenders is: " + defenders);
+    document.getElementById('defenderCount').value = defenders;
+    console.log("Updated defenders to be equal to " + defenders);
+}
+
+function defenseHappens(){
+	attackers = attackers - (tempDefenders * 0.49);
+    console.log("After the attack, the number of attackers is: " + attackers);
+    document.getElementById('attackerCount').value = attackers;
+    console.log("Updated attackers to be equal to " + attackers);
+}
+
+function reinforceCities(){
+	// Add armies to defending cities.
+    
+    let availableReinforcements = defenderArmiesAvailable - otherArmies;
+    
+    console.log("Total available reinforcements are: " + availableReinforcements);
+    
+    // Add armies to other cities.
+    
+    let reinforcements = (availableReinforcements / cities);
+    
+    console.log("Reinforcements available per city are: " + reinforcements);
+    
+    // Apply cap:
+    
+    if (reinforcements > 200) {
+    	reinforcements = 200;
+        console.log("Capped reinforcements at " + reinforcements);
+    }
+    
+    defenders += reinforcements;
+    document.getElementById('defenderCount').value = defenders;
+    console.log("Updated defenders to be equal to " + defenders);
+    
+    otherCityDefenders += reinforcements;
+    document.getElementById('otherCities').value = otherCityDefenders;
+    console.log("Updated other city defenders to be equal to " + otherCityDefenders);
+    
+}
+
+
+</script>
 
 </body>
-</html>
+</html> 
